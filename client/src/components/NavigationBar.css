@@ -1,11 +1,11 @@
 /* NavigationBar.css */
 .bottom-navigation {
-  position: fixed; /* Changed from absolute to fixed */
+  position: absolute; /* Changed from absolute to fixed */
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
     width: 90%;
-    max-width: 430px; /* Same as container */
+    max-width: 400px; /* Same as container */
     background-color: white;
     display: flex;
     justify-content: space-around;
@@ -43,7 +43,7 @@
 
 /* Active state for the current route */
 .nav-item.active {
-  background-color: #e0e0e0;
+  color: #9d80c1;
 }
 
 .nav-item.active .nav-icon,
@@ -52,4 +52,12 @@
 }
 .FaDumbbell{
   rotate: 30deg;
+}
+.nav-item.active {
+  color: #9d80c1; /* Or your preferred active color */
+}
+
+.nav-item.active .nav-icon,
+.nav-item.active .nav-text {
+  color: #9d80c1; /* Match your hover color */
 }
