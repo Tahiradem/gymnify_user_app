@@ -9,7 +9,7 @@ const LoginButton = ({ onClick, disabled, isLoading }) => {
       disabled={disabled || isLoading}
     >
       {isLoading ? (
-        <div className="loading-spinner"></div>
+        <div className="loading-spiner"></div>
       ) : (
         'Login'
       )}
