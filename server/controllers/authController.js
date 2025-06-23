@@ -37,3 +37,40 @@ exports.loginUser = async (req, res) => {
     });
   }
 };
+exports.updateUserData = async (req, res) => {
+  try {
+    const { email, field, value } = req.body;
+
+    // Find the gym that contains the user
+    const gym = await Gymers.findOne({
+      'users.email': email
+    });
+
+    if (!gym) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'User not found' 
+      });
+    }
+
+    // Update the specific field for the user
+    const updateQuery = {};
+    updateQuery[`users.$.${field}`] = value;
+
+    await Gymers.updateOne(
+      { 'users.email': email },
+      { $set: updateQuery }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: 'User data updated successfully'
+    });
+  } catch (error) {
+    console.error('Update error:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Server error during update' 
+    });
+  }
+};

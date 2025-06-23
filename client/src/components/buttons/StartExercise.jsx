@@ -1,25 +1,30 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './StartExercise.css'; // We'll create this CSS file next
+import './StartExercise.css';
+import TotalTimeCount from "../../components/TotalTimeCount"
 
 const StartExerciseButton = () => {
   const [isDisabled, setIsDisabled] = useState(false);
+  const [isCounting, setIsCounting] = useState(false);
   const navigate = useNavigate();
 
   const handleClick = () => {
     setIsDisabled(true);
-    navigate('/ExerciseToday');
+    setIsCounting(true);
+    navigate('/Exercise');
   };
 
   return (
-    <button 
-      className={`start-exercise-button ${isDisabled ? 'disabled' : ''}`}
-      onClick={handleClick}
-      disabled={isDisabled}
-    >
-      <span className="button-text">Start Now</span>
-      <span className="arrow-icon">»</span>
-    </button>
+    <div className="exercise-container">
+      <button 
+        className={`start-exercise-button ${isDisabled ? 'disabled' : ''}`}
+        onClick={handleClick}
+        disabled={isDisabled}
+      >
+        <span className="button-text">Start Now</span>
+        <span className="arrow-icon">»</span>
+      </button>
+    </div>
   );
 };
 

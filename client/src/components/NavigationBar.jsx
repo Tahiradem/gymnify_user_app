@@ -25,8 +25,8 @@ const NavigationBar = () => {
   return (
     <div className="bottom-navigation">
       <div 
-        className={`nav-item ${isActive('exercise') ? 'active' : ''}`} 
-        onClick={() => handleNavigation('Exercise')}
+        className={`nav-item ${isActive('Exercise_Review') ? 'active' : ''}`} 
+        onClick={() => handleNavigation('Exercise_Review')}
       >
         <FaDumbbell className="nav-icon FaDumbbell" />
         <span className="nav-text">Exercise</span>
@@ -39,8 +39,8 @@ const NavigationBar = () => {
         <span className="nav-text">Settings</span>
       </div>
       <div 
-        className={`nav-item ${isActive('service') ? 'active' : ''}`} 
-        onClick={() => handleNavigation('service')}
+        className={`nav-item ${isActive('nutration') ? 'active' : ''}`} 
+        onClick={() => handleNavigation('nutration')}
       >
         <FaUtensils className="nav-icon" />
         <span className="nav-text">Nutrition</span>
@@ -53,8 +53,8 @@ const NavigationBar = () => {
         <span className="nav-text">Report</span>
       </div>
       <div 
-        className={`nav-item ${isActive('profile') ? 'active' : ''}`} 
-        onClick={() => handleNavigation('profile')}
+        className={`nav-item ${isActive('Profile') ? 'active' : ''}`} 
+        onClick={() => handleNavigation('Profile')}
       >
         <FaUser className="nav-icon" />
         <span className="nav-text">Profile</span>

@@ -1,0 +1,48 @@
+.user_data_main_container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 0 0 100px 0;
+}
+.user_data_each_section{
+    width: 96%;
+    background: #fff;
+    position: relative;
+    border-radius: 10px;
+    box-shadow: 3px 3px 10px 0 #33333318;
+    margin-top:15px;
+}
+.user_data_each_section p{
+    margin-left: 20px;
+    color: #333;
+}
+.data_name_text{
+    font-size: 17px;
+    font-weight: 500;
+    margin-top: 15px;
+    margin-bottom: 0;
+}
+.real_data_value_text{
+    font-size: 25px;
+    margin-top: 10px;
+    margin-bottom:15px;
+    font-weight: 700;
+}
+.edit_icon_for_profile{
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    color: #555;
+    font-size: 18px;
+}
+.exercise_week{
+    font-size: 20px;
+    font-weight: 400;
+}
+.membership_plan_text_data{
+    font-size: 20px;
+    color: #333;
+}

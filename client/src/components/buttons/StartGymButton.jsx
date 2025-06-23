@@ -8,7 +8,7 @@ const StartGymButton = () => {
 
   const handleClick = () => {
     setIsDisabled(true);
-    navigate('/Exercise');
+    navigate('/Exercise_Review');
   };
 
   return (

@@ -13,6 +13,36 @@ export const getAuthData = () => {
   
   return { email, password, userData, gymName };
 };
+export const updateUserData = async (field, value) => {
+    try {
+        const { userData } = getAuthData();
+        const token = localStorage.getItem('token');
+        
+        const response = await axios.put(
+            `/api/users/${userData._id}/data`,
+            { field, value },
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }
+        );
+
+        // Update local storage if needed
+        if (response.data.user) {
+            const existingData = JSON.parse(localStorage.getItem('authData'));
+            localStorage.setItem('authData', JSON.stringify({
+                ...existingData,
+                userData: response.data.user.userData
+            }));
+        }
+
+        return response.data;
+    } catch (error) {
+        console.error('Error updating user data:', error);
+        throw error;
+    }
+};
 
 export const clearAuthData = () => {
   sessionStorage.removeItem('gymnify_user_email');
