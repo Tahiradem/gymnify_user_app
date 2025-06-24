@@ -3,15 +3,18 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
+const workoutRoutes = require('./routes/workoutRoutes');
 
 const app = express();
 
 // Middleware
 app.use(cors());
+app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.listen(5000, "0.0.0.0", () => {  // Allow external connections
   console.log("Server running on port 5000");
 });
+app.use('/api/workout', workoutRoutes);
 
 // Database connection
 mongoose.connect(process.env.MONGODB_URI)

@@ -3,47 +3,47 @@ import { getAuthData, storeAuthData } from "../utils/authStorage";
 import { FaPen } from 'react-icons/fa';
 import { useState } from 'react';
 import EditModal from './EditModal';
+import WeeklyExerciseModal from './WeeklyExerciseModal';
+import MembershipModal from './MembershipModal';
 
 const UserDataBox = () => {
   const { userData, gymName, email, password } = getAuthData();
   const [editingField, setEditingField] = useState(null);
   const [currentValue, setCurrentValue] = useState(null);
+  const [modalType, setModalType] = useState('default'); // 'default', 'weekly', 'membership'
 
-  const handleEditClick = (field, value) => {
+   const handleEditClick = (field, value, type = 'default') => {
     setEditingField(field);
     setCurrentValue(value);
+    setModalType(type);
   };
 
   const handleSave = async (newValue) => {
     try {
-      // Update the user data in sessionStorage
-      let updatedUserData;
+      let updatedUserData = { ...userData };
       
-      // Special handling for nested objects/arrays
-      if (editingField === 'medicalConditions') {
-        updatedUserData = { 
-          ...userData, 
-          medicalConditions: [newValue] 
-        };
-      } else if (editingField === 'supplements') {
-        updatedUserData = { 
-          ...userData, 
-          supplements: [{ name: newValue }] 
-        };
-      } else if (editingField === 'membershipDetail') {
-        // This might need more complex handling based on your data structure
-        updatedUserData = userData;
-      } else if (editingField === 'exercises') {
-        // For weekly exercises, we might need a different modal
-        updatedUserData = userData;
-      } else {
-        updatedUserData = { ...userData, [editingField]: newValue };
+      // Special handling for different field types
+      switch(editingField) {
+        case 'medicalConditions':
+          updatedUserData.medicalConditions = Array.isArray(newValue) ? newValue : [newValue];
+          break;
+          
+        case 'exercises':
+          updatedUserData.exercises = newValue;
+          break;
+          
+        case 'membershipDetail':
+          updatedUserData.membershipDetail = newValue;
+          break;
+          
+        default:
+          updatedUserData[editingField] = newValue;
       }
       
       storeAuthData(email, password, updatedUserData, gymName);
 
-      // Here you would typically also send the update to your backend
-      const response = await fetch('http://localhost:5000/api/auth/update', {
+      // Send update to backend
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/update`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -55,19 +55,20 @@ const UserDataBox = () => {
         }),
       });
       
-      if (!response.ok) {
-        throw new Error('Failed to update data');
-      }
+      if (!response.ok) throw new Error('Failed to update data');
       
     } catch (error) {
       console.error('Error updating user data:', error);
       throw error;
+    } finally {
+      handleClose();
     }
   };
 
   const handleClose = () => {
     setEditingField(null);
     setCurrentValue(null);
+    setModalType('default');
   };
 
   return (
@@ -77,6 +78,28 @@ const UserDataBox = () => {
           field={editingField}
           currentValue={currentValue}
           onSave={handleSave}
+          onClose={handleClose}
+        />
+      )}
+      {editingField && modalType === 'default' && (
+        <EditModal
+          field={editingField}
+          currentValue={currentValue}
+          onSave={handleSave}
+          onClose={handleClose}
+        />
+      )}
+      {editingField === 'exercises' && modalType === 'weekly' && (
+        <WeeklyExerciseModal
+          currentExercises={currentValue}
+          onSave={handleSave}
+          onClose={handleClose}
+        />
+      )}
+      {editingField === 'membershipDetail' && modalType === 'membership' && (
+        <MembershipModal
+          currentMembership={currentValue[0]}
+          onSave={(newMembership) => handleSave([newMembership])}
           onClose={handleClose}
         />
       )}
@@ -110,17 +133,23 @@ const UserDataBox = () => {
       
       <div className="user_data_each_section">
         <p className="data_name_text">Medical Condition</p>
-        <p className="real_data_value_text">
-          {userData.medicalConditions && userData.medicalConditions[0] !== "" 
-            ? userData.medicalConditions[0] 
-            : "---"}
-        </p>
+        <div className="medical-conditions-list">
+          {userData.medicalConditions?.length > 0 ? (
+            userData.medicalConditions.map((condition, index) => (
+              <p key={index} className="real_data_value_text">
+                {condition || "---"}
+              </p>
+            ))
+          ) : (
+            <p className="real_data_value_text">---</p>
+          )}
+        </div>
         <FaPen 
           className="edit_icon_for_profile" 
-          onClick={() => handleEditClick('medicalConditions', 
-            userData.medicalConditions && userData.medicalConditions[0] !== "" 
-              ? userData.medicalConditions[0] 
-              : ""
+          onClick={() => handleEditClick(
+            'medicalConditions', 
+            userData.medicalConditions || [""],
+            'default'
           )} 
         />
       </div>
@@ -201,16 +230,26 @@ const UserDataBox = () => {
       
       <div className="user_data_each_section">
         <p className="data_name_text">Weekly Exercise</p>
-        <ul>
-          {userData.exercises && userData.exercises.map((exercise, index) => (
-            <li key={index} className="real_data_value_text exercise_week">
-              {getDayName(index)}-{exercise || "---"}
-            </li>
-          ))}
-        </ul>
+        <div className="weekly-exercise-container">
+          {userData.exercises?.length > 0 ? (
+              <div>
+                {userData.exercises.map((exercise, index) => (
+                  <ul key={index}>
+                    <li className="exercise-value"><span>{getDayName(index)}</span>-{exercise || "Rest day"}</li>
+                  </ul>
+                ))}
+              </div>
+          ) : (
+            <p className="real_data_value_text">No exercises set</p>
+          )}
+        </div>
         <FaPen 
           className="edit_icon_for_profile" 
-          onClick={() => handleEditClick('exercises', userData.exercises)} 
+          onClick={() => handleEditClick(
+            'exercises', 
+            userData.exercises || Array(7).fill(""),
+            'weekly'
+          )} 
         />
       </div>
       
@@ -229,12 +268,31 @@ const UserDataBox = () => {
       
       <div className="user_data_each_section">
         <p className="data_name_text">Membership</p>
-        <p className="real_data_value_text membership_plan_text_data">
-          {userData.membershipDetail && userData.membershipDetail[0] 
-            ? `${userData.membershipDetail[0].planName}- ${userData.membershipDetail[0].price} /${userData.membershipDetail[0].packageLength}`
-            : "---"}
-        </p>
-        <FaPen className="edit_icon_for_profile" />
+        {userData.membershipDetail?.length > 0 ? (
+          <div className="membership-details">
+            
+            <p className="real_data_value_text">
+              {userData.membershipDetail[0].price}
+            </p>/
+            <p className="real_data_value_text">
+               {userData.membershipDetail[0].packageLength}
+            </p>
+          </div>
+        ) : (
+          <p className="real_data_value_text">No membership</p>
+        )}
+        <FaPen 
+          className="edit_icon_for_profile" 
+          onClick={() => handleEditClick(
+            'membershipDetail', 
+            userData.membershipDetail || [{
+              planName: "",
+              price: "",
+              packageLength: ""
+            }],
+            'membership'
+          )} 
+        />
       </div>
     </div>
   );

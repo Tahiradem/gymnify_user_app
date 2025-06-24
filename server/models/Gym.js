@@ -14,10 +14,18 @@ const userSchema = new mongoose.Schema({
   paymentDate: String,
   paymentStatus: Boolean,
   exerciseTimePerDay: String,
-  notificationTime: String,
+  adminNotifications: {
+    type: [String], // This ensures it's an array of strings
+    default: []
+  },
   healthStatus: String,
   exerciseType: String,
   enteringTime: String,
+  spentTimeOnGym: {
+    type: Map,
+    of: String,
+    default: {}
+  },
   bloodType: String,
   exercises: [String],
   upComingExercise: String,

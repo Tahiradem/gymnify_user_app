@@ -12,6 +12,9 @@ import exercise8 from '../assets/exercise_4.mp4';
 import exercise9 from '../assets/exercise_1.mp4';
 import exercise10 from '../assets/exercise_2.mp4';
 import TotalTimeCount from '../components/TotalTimeCount';
+import NavigationBar from '../components/NavigationBar';
+import { getAuthData } from "../utils/authStorage";
+import { getDataBaseData } from '../utils/getDataBase';
 
 const exercises = [
   {
@@ -25,108 +28,108 @@ const exercises = [
     description: "The shoulder press builds deltoids and upper-body strength, enhances posture, and improves overhead mobility. Use proper form to prevent injuries and maximize gains.",
     alternatives: ["Push Ups", "Arnold Press", "Lateral Raises"]
   },
-  {
-    id: 2,
-    video: exercise2,
-    name: "Push Ups",
-    calories: 8,
-    reps: 15,
-    sets: 3,
-    weight: "Body Weight",
-    description: "Push-ups strengthen the chest, shoulders, triceps, and core muscles. They improve upper body endurance and functional fitness.",
-    alternatives: ["Bench Press", "Dips", "Incline Push Ups"]
-  },
-  {
-    id: 3,
-    video: exercise3,
-    name: "Squats",
-    calories: 12,
-    reps: 12,
-    sets: 4,
-    weight: "20 KG",
-    description: "Squats target your quadriceps, hamstrings, and glutes while also engaging your core. They are fundamental for lower body strength.",
-    alternatives: ["Lunges", "Leg Press", "Step Ups"]
-  },
-  {
-    id: 4,
-    video: exercise4,
-    name: "Bicep Curls",
-    calories: 6,
-    reps: 12,
-    sets: 3,
-    weight: "15 KG",
-    description: "Bicep curls isolate the biceps brachii muscle. They help develop arm strength and muscle definition.",
-    alternatives: ["Hammer Curls", "Chin Ups", "Concentration Curls"]
-  },
-  {
-    id: 5,
-    video: exercise5,
-    name: "Deadlifts",
-    calories: 15,
-    reps: 8,
-    sets: 4,
-    weight: "40 KG",
-    description: "Deadlifts work multiple muscle groups including the back, glutes, hamstrings, and core. They are excellent for overall strength development.",
-    alternatives: ["Romanian Deadlifts", "Kettlebell Swings", "Hyperextensions"]
-  },
-  {
-    id: 6,
-    video: exercise6,
-    name: "Pull Ups",
-    calories: 9,
-    reps: 8,
-    sets: 3,
-    weight: "Body Weight",
-    description: "Pull-ups target the back, shoulders, and arms. They improve upper body pulling strength and grip endurance.",
-    alternatives: ["Lat Pulldowns", "Inverted Rows", "Assisted Pull Ups"]
-  },
-  {
-    id: 7,
-    video: exercise7,
-    name: "Lunges",
-    calories: 7,
-    reps: 10,
-    sets: 3,
-    weight: "10 KG",
-    description: "Lunges work the quadriceps, hamstrings, and glutes while improving balance and coordination.",
-    alternatives: ["Step Back Lunges", "Bulgarian Split Squats", "Walking Lunges"]
-  },
-  {
-    id: 8,
-    video: exercise8,
-    name: "Plank",
-    calories: 5,
-    reps: 1,
-    sets: 3,
-    weight: "Body Weight",
-    description: "Planks strengthen the core muscles including the abs, back, and shoulders. They improve posture and stability.",
-    alternatives: ["Side Plank", "Ab Rollouts", "Bird Dogs"]
-  },
-  {
-    id: 9,
-    video: exercise9,
-    name: "Bench Press",
-    calories: 11,
-    reps: 8,
-    sets: 4,
-    weight: "35 KG",
-    description: "The bench press primarily targets the chest muscles while also working the shoulders and triceps.",
-    alternatives: ["Dumbbell Press", "Push Ups", "Chest Flys"]
-  },
-  {
-    id: 10,
-    video: exercise10,
-    name: "Russian Twists",
-    calories: 6,
-    reps: 20,
-    sets: 3,
-    weight: "5 KG",
-    description: "Russian twists target the obliques and core muscles. They improve rotational strength and stability.",
-    alternatives: ["Bicycle Crunches", "Wood Choppers", "Side Bends"]
-  }
+  // {
+  //   id: 2,
+  //   video: exercise2,
+  //   name: "Push Ups",
+  //   calories: 8,
+  //   reps: 15,
+  //   sets: 3,
+  //   weight: "Body Weight",
+  //   description: "Push-ups strengthen the chest, shoulders, triceps, and core muscles. They improve upper body endurance and functional fitness.",
+  //   alternatives: ["Bench Press", "Dips", "Incline Push Ups"]
+  // },
+  // {
+  //   id: 3,
+  //   video: exercise3,
+  //   name: "Squats",
+  //   calories: 12,
+  //   reps: 12,
+  //   sets: 4,
+  //   weight: "20 KG",
+  //   description: "Squats target your quadriceps, hamstrings, and glutes while also engaging your core. They are fundamental for lower body strength.",
+  //   alternatives: ["Lunges", "Leg Press", "Step Ups"]
+  // },
+  // {
+  //   id: 4,
+  //   video: exercise4,
+  //   name: "Bicep Curls",
+  //   calories: 6,
+  //   reps: 12,
+  //   sets: 3,
+  //   weight: "15 KG",
+  //   description: "Bicep curls isolate the biceps brachii muscle. They help develop arm strength and muscle definition.",
+  //   alternatives: ["Hammer Curls", "Chin Ups", "Concentration Curls"]
+  // },
+  // {
+  //   id: 5,
+  //   video: exercise5,
+  //   name: "Deadlifts",
+  //   calories: 15,
+  //   reps: 8,
+  //   sets: 4,
+  //   weight: "40 KG",
+  //   description: "Deadlifts work multiple muscle groups including the back, glutes, hamstrings, and core. They are excellent for overall strength development.",
+  //   alternatives: ["Romanian Deadlifts", "Kettlebell Swings", "Hyperextensions"]
+  // },
+  // {
+  //   id: 6,
+  //   video: exercise6,
+  //   name: "Pull Ups",
+  //   calories: 9,
+  //   reps: 8,
+  //   sets: 3,
+  //   weight: "Body Weight",
+  //   description: "Pull-ups target the back, shoulders, and arms. They improve upper body pulling strength and grip endurance.",
+  //   alternatives: ["Lat Pulldowns", "Inverted Rows", "Assisted Pull Ups"]
+  // },
+  // {
+  //   id: 7,
+  //   video: exercise7,
+  //   name: "Lunges",
+  //   calories: 7,
+  //   reps: 10,
+  //   sets: 3,
+  //   weight: "10 KG",
+  //   description: "Lunges work the quadriceps, hamstrings, and glutes while improving balance and coordination.",
+  //   alternatives: ["Step Back Lunges", "Bulgarian Split Squats", "Walking Lunges"]
+  // },
+  // {
+  //   id: 8,
+  //   video: exercise8,
+  //   name: "Plank",
+  //   calories: 5,
+  //   reps: 1,
+  //   sets: 3,
+  //   weight: "Body Weight",
+  //   description: "Planks strengthen the core muscles including the abs, back, and shoulders. They improve posture and stability.",
+  //   alternatives: ["Side Plank", "Ab Rollouts", "Bird Dogs"]
+  // },
+  // {
+  //   id: 9,
+  //   video: exercise9,
+  //   name: "Bench Press",
+  //   calories: 11,
+  //   reps: 8,
+  //   sets: 4,
+  //   weight: "35 KG",
+  //   description: "The bench press primarily targets the chest muscles while also working the shoulders and triceps.",
+  //   alternatives: ["Dumbbell Press", "Push Ups", "Chest Flys"]
+  // },
+  // {
+  //   id: 10,
+  //   video: exercise10,
+  //   name: "Russian Twists",
+  //   calories: 6,
+  //   reps: 20,
+  //   sets: 3,
+  //   weight: "5 KG",
+  //   description: "Russian twists target the obliques and core muscles. They improve rotational strength and stability.",
+  //   alternatives: ["Bicycle Crunches", "Wood Choppers", "Side Bends"]
+  // }
 ];
 
-const EachExercise = () => {
+const EachExercise = (e) => {
   const navigate = useNavigate();
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [showAlternatives, setShowAlternatives] = useState(false);
@@ -135,11 +138,23 @@ const EachExercise = () => {
   const [skippedExercises, setSkippedExercises] = useState([]);
   const [completedExercises, setCompletedExercises] = useState([]);
   const [workoutActive, setWorkoutActive] = useState(true);
+  const [timeSpent, setTimeSpent] = useState(0); // Total workout time in seconds
+  const [userEmail, setUserEmail] = useState('');
+  const { userData , gymName} = getAuthData();
+  const {dataOfDataBase} = getDataBaseData()
+
 
   const currentExercise = exercises[currentExerciseIndex];
   const allExercisesCompleted = 
     completedExercises.length + skippedExercises.length >= exercises.length;
 
+useEffect(() => {
+    if (userData && userData.email) {
+      setUserEmail(userData.email);
+    }
+  }, []);
+
+  // Exercise timer effect
   useEffect(() => {
     let interval;
     if (isTimerRunning) {
@@ -149,6 +164,17 @@ const EachExercise = () => {
     }
     return () => clearInterval(interval);
   }, [isTimerRunning]);
+
+  // Total workout time effect
+  useEffect(() => {
+    let interval;
+    if (workoutActive) {
+      interval = setInterval(() => {
+        setTimeSpent(prev => prev + 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [workoutActive]);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -189,14 +215,57 @@ const EachExercise = () => {
     }
   };
 
-  const handleFinishWorkout = () => {
-    setWorkoutActive(false); // Stop the total timer when workout finishes
-    navigate('/profile');
+ const handleFinishWorkout = async () => {
+    setWorkoutActive(false);
+    
+    
+    try {
+      // Format the date as "Monday/jun/24/2025"
+      const now = new Date();
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+      
+      const dayName = days[now.getDay()];
+      const monthName = months[now.getMonth()];
+      const date = now.getDate();
+      const year = now.getFullYear();
+      
+      const formattedDate = `${dayName}/${monthName}/${date}/${year}`;
+      
+      // Convert seconds to "X.XX hours" format
+      const hours = (timeSpent / 3600).toFixed(2);
+      const timeSpentFormatted = formatTime(timeSpent);
+      
+      // Send data to backend
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/workout/save-workout-time`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: userEmail,
+          date: formattedDate,
+          timeSpent: timeSpentFormatted
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        console.error('Failed to save workout time:', data.message);
+      }
+      
+      navigate('/report');
+    } catch (error) {
+      console.error('Error saving workout time:', error);
+      navigate('/report');
+    }
   };
 
 
   return (
     <div className="EachExercisePage">
+    <NavigationBar/>
       <div className="exercise-video-container">
         <video
           src={currentExercise.video}
@@ -205,7 +274,7 @@ const EachExercise = () => {
           muted
           className="exercise-video"
         />
-        <TotalTimeCount isActive={workoutActive} />
+         <TotalTimeCount timeSpent={timeSpent} />
       </div>
       
       <div className="top_cal_and_exercise_text">

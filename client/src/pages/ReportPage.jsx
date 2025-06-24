@@ -4,7 +4,9 @@ import { Bar, Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend } from 'chart.js';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { useState } from 'react';
+import { getAuthData } from "../utils/authStorage";
+import { useState, useEffect } from 'react';
+import { fetchUserData } from "../utils/apiFetcher";
 
 // Register ChartJS components
 ChartJS.register(
@@ -19,8 +21,73 @@ ChartJS.register(
 );
 
 const ReportPage = () => {
-  const [startDate, setStartDate] = useState(new Date());
+  const [dataBaseData, setDataBaseData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const { user } = await fetchUserData();
+        setDataBaseData(user);
+      } catch (err) {
+        setError(err.message || "Failed to load user data");
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, []); 
+
+  const [startDate, setStartDate] = useState(new Date());
+  const { userData, gymName } = getAuthData();
+
+  function getFormattedDate() {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+    
+    const today = new Date();
+    const dayName = days[today.getDay()];
+    const monthName = months[today.getMonth()];
+    const date = today.getDate();
+    const year = today.getFullYear();
+    
+    return `${dayName}/${monthName}/${date}/${year}`;
+  }
+
+  const formattedDate = getFormattedDate();
+  
+  // Get attendance data from database or use sample data
+  const attendanceData = dataBaseData?.monthlyAttendance[0].dateOfAttended|| [
+    '2025-06-01',
+    '2025-06-02',
+    '2025-06-05',
+    '2025-06-07',
+    '2025-06-10',
+    '2025-06-15',
+    '2025-06-20',
+    '2025-06-26',
+  ];
+  // Custom day component
+  const renderDayContents = (day, date) => {
+    const dateStr = date.toISOString().split('T')[0];
+    const isAttended = attendanceData.includes(dateStr);
+    
+    return (
+      <div className="custom-day-content">
+        {day}
+        {isAttended && <div className="day-indicator attended-indicator" />}
+      </div>
+    );
+  };
+
+  // Add custom class names to attended days
+  const dayClassName = (date) => {
+    const dateStr = date.toISOString().split('T')[0];
+    return attendanceData.includes(dateStr) ? 'attended-day' : '';
+  };
+
+  // Rest of your component code remains the same...
   // Sample data for the week
   const weeklyCalorieData = {
     labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
@@ -110,18 +177,6 @@ const ReportPage = () => {
     }
   };
 
-  // Sample attendance data
-  const attendanceData = {
-    '2025-06-01': 'attended',
-    '2025-06-02': 'attended',
-    '2025-06-05': 'attended',
-    '2025-06-07': 'attended',
-    '2025-06-10': 'attended',
-    '2025-06-26': 'attended',
-    '2025-06-15': 'attended',
-    '2025-06-20': 'attended',
-  };
-
   const options = {
     responsive: true,
     plugins: {
@@ -158,32 +213,6 @@ const ReportPage = () => {
     categoryPercentage: 0.8,
   };
 
-  // Custom day class names based on attendance
-  const dayClassName = (date) => {
-    const dateStr = date.toISOString().split('T')[0];
-    const status = attendanceData[dateStr];
-    const isWeekend = date.getDay() === 0 || date.getDay() === 6;
-    
-    if (isWeekend) return 'weekend-day';
-    if (status === 'attended') return 'attended-day';
-    if (status === 'missed') return 'missed-day';
-    return 'normal-day';
-  };
-
-  // Custom day component
-  const renderDayContents = (day, date) => {
-    const dateStr = date.toISOString().split('T')[0];
-    const status = attendanceData[dateStr];
-    
-    return (
-      <div className="custom-day-content">
-        {day}
-        {status === 'attended' && <div className="day-indicator attended-indicator" />}
-        {status === 'missed' && <div className="day-indicator missed-indicator" />}
-      </div>
-    );
-  };
-
   return (
     <div className="report_page">
       <NavigationBar />
@@ -194,7 +223,9 @@ const ReportPage = () => {
         <div className="time_calore_activity_report_daily">
           <div className="report_of_day time_spend_report">
             <p className="report_daily_data_name_text">Time</p>
-            <p className="report_daily_data_real_text">80 min</p>
+            <p className="report_daily_data_real_text">
+              {loading ? "Loading..." : dataBaseData?.spentTimeOnGym[formattedDate] || "No data"}
+            </p>
           </div>
           <div className="report_of_day calorie_burned_report">
             <p className="report_daily_data_name_text">calorie🔥</p>
@@ -222,8 +253,8 @@ const ReportPage = () => {
           onChange={(date) => setStartDate(date)}
           inline
           calendarClassName="attendance-calendar"
-          dayClassName={dayClassName}
           renderDayContents={renderDayContents}
+          dayClassName={dayClassName}
           renderCustomHeader={({
             date,
             decreaseMonth,
@@ -260,7 +291,7 @@ const ReportPage = () => {
           )}
         />
       </div>
-      <p className="total_gym_seprnd_from_start_to_end">Total - 12 Hours</p>
+      <p className="total_gym_seprnd_from_start_to_end">Total - {userData.totalTimeSpendOnGym} Hours</p>
       <p className="frequently_trained_bodys_text">Training Frequency</p>
       <div className="frequently_tranined_body_box"></div>
       <p className="weight_change_record_text">Your Weight Changes</p>

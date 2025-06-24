@@ -1,22 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-const TotalTimeCount = ({ isActive }) => {
-  const [timeSpent, setTimeSpent] = useState(0); // time in seconds
-
-  useEffect(() => {
-    let interval;
-    
-    if (isActive) {
-      interval = setInterval(() => {
-        setTimeSpent(prev => prev + 1);
-      }, 1000);
-    }
-
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [isActive]);
-
+const TotalTimeCount = ({ timeSpent }) => {
   // Format seconds to HH:MM:SS
   const formatTime = (totalSeconds) => {
     const hours = Math.floor(totalSeconds / 3600);

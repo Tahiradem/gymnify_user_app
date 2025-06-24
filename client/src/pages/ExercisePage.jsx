@@ -3,11 +3,18 @@ import NavigationBar from "../components/NavigationBar";
 import imageTop from "../assets/photo-1728486144678-95cb7c5f7463.jpeg";
 import Targeted_body_pic from "../assets/1000093564-removebg-preview.png";
 import ExerciseCompo from "../components/ExerciseCompo";
+import { getAuthData } from "../utils/authStorage";
 import StartExerciseButton from "../components/buttons/StartExercise";
 import {FaArrowLeft } from 'react-icons/fa';
 
 
 const ExercisePage = () => {
+
+  const { userData , gymName} = getAuthData();
+  const today = new Date();
+  const dayNumber = (today.getDay() + 6) % 7;
+  
+
   return (
     <div className="exercise-page">
       <NavigationBar />
@@ -16,8 +23,8 @@ const ExercisePage = () => {
       <div className="exercise_main_continer">
         <div className="Top_about_exercise">
           <span className="Day_and_text_exercise">
-            <h1>DAY 2</h1>
-            <h2>Full Arm</h2>
+            <h1>{userData.monthlyAttendance[0].daysAttended} Days</h1>
+            <h2>{userData.exercises[dayNumber]}</h2>
           </span>
           <img 
             src={Targeted_body_pic} 
