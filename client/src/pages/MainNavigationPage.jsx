@@ -3,6 +3,7 @@ import { getAuthData } from '../utils/authStorage';
 import './MainNavigationPage.css';
 import NavigationBar from '../components/NavigationBar';
 import StartGymButton from '../components/buttons/StartGymButton';
+import MeasurmentAlert from '../components/MeasurmentAlert';
 
 const MainNavigationPage = () => {
   const { userData , gymName} = getAuthData();
@@ -10,6 +11,7 @@ const MainNavigationPage = () => {
   return (
     <div className="main-container_navigation">
       <NavigationBar />
+      <MeasurmentAlert/>
       <h1 className='gymHouseName_navigator_page'>{gymName || 'Your Gym House'}</h1>
       <h1 className='welcome_text'>Welcome, {userData?.userName || 'User'}!</h1>
       {userData?.qrCode && (

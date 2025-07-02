@@ -37,7 +37,18 @@ const UserDataBox = () => {
           break;
           
         default:
+        if (editingField.includes('.')) {
+          const [parent, child] = editingField.split('.');
+          updatedUserData = {
+            ...updatedUserData,
+            [parent]: {
+              ...updatedUserData[parent],
+              [child]: newValue
+            }
+          };
+        } else {
           updatedUserData[editingField] = newValue;
+        }
       }
       
       storeAuthData(email, password, updatedUserData, gymName);
@@ -160,6 +171,30 @@ const UserDataBox = () => {
         <FaPen 
           className="edit_icon_for_profile" 
           onClick={() => handleEditClick('enteringTime', userData.enteringTime)} 
+        />
+      </div>
+      <div className="user_data_each_section">
+        <p className="data_name_text">waist size</p>
+        <p className="real_data_value_text">{userData.bodyMeasurements.waistSize}</p>
+        <FaPen 
+          className="edit_icon_for_profile" 
+          onClick={() => handleEditClick('bodyMeasurements.waistSize', userData.bodyMeasurements.waistSize)} 
+        />
+      </div>
+      <div className="user_data_each_section">
+        <p className="data_name_text">Neck size</p>
+        <p className="real_data_value_text">{userData.bodyMeasurements.neckSize}</p>
+        <FaPen 
+          className="edit_icon_for_profile" 
+          onClick={() => handleEditClick('bodyMeasurements.neckSize', userData.bodyMeasurements.neckSize)} 
+        />
+      </div>
+      <div className="user_data_each_section">
+        <p className="data_name_text">Hip size</p>
+        <p className="real_data_value_text">{userData.bodyMeasurements.hipSize}</p>
+        <FaPen 
+          className="edit_icon_for_profile" 
+          onClick={() => handleEditClick('bodyMeasurements.hipSize', userData.bodyMeasurements.hipSize)} 
         />
       </div>
       

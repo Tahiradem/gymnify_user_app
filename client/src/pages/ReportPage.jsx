@@ -7,6 +7,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { getAuthData } from "../utils/authStorage";
 import { useState, useEffect } from 'react';
 import { fetchUserData } from "../utils/apiFetcher";
+import axios from 'axios';
 
 // Register ChartJS components
 ChartJS.register(
@@ -23,7 +24,10 @@ ChartJS.register(
 const ReportPage = () => {
   const [dataBaseData, setDataBaseData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [reportData, setReportData] = useState(null);
   const [error, setError] = useState(null);
+  const [startDate, setStartDate] = useState(new Date());
+  const { userData, gymName } = getAuthData();
   
   useEffect(() => {
     const loadData = async () => {
@@ -39,23 +43,50 @@ const ReportPage = () => {
     loadData();
   }, []); 
 
-  const [startDate, setStartDate] = useState(new Date());
-  const { userData, gymName } = getAuthData();
+  useEffect(() => {
+    const fetchReportData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/reports/${userData._id}`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          }
+        );
+        
+        if (response.data && response.data.success) {
+          setReportData(response.data.data);
+        } else {
+          setError("No report data available");
+        }
+      } catch (err) {
+        console.error("Error fetching report data:", err);
+        setError("Failed to fetch report data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReportData();
+  }, [userData._id]);
+
 
   function getFormattedDate() {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     
     const today = new Date();
     const dayName = days[today.getDay()];
     const monthName = months[today.getMonth()];
-    const date = today.getDate();
+    const date = today.getDate().toString().padStart(2, '0');
     const year = today.getFullYear();
     
-    return `${dayName}/${monthName}/${date}/${year}`;
+    return `${dayName} ${monthName} ${date} ${year}`;
   }
 
   const formattedDate = getFormattedDate();
+  console.log(reportData?.todaysData.workout.totalCalories)
   
   // Get attendance data from database or use sample data
   const attendanceData = dataBaseData?.monthlyAttendance[0].dateOfAttended|| [
@@ -224,16 +255,16 @@ const ReportPage = () => {
           <div className="report_of_day time_spend_report">
             <p className="report_daily_data_name_text">Time</p>
             <p className="report_daily_data_real_text">
-              {loading ? "Loading..." : dataBaseData?.spentTimeOnGym[formattedDate] || "No data"}
+              {loading ? "Loading..." : reportData?.spentTimeOnGym?.[formattedDate] || "0 min" || "0 min"}
             </p>
           </div>
           <div className="report_of_day calorie_burned_report">
             <p className="report_daily_data_name_text">calorie🔥</p>
-            <p className="report_daily_data_real_text">100 cal</p>
+            <p className="report_daily_data_real_text">{loading ? "Loading..." : reportData?.todaysData.workout.totalCalories || "0"} kcal</p>
           </div>
           <div className="report_of_day activity_done_report">
             <p className="report_daily_data_name_text">Exercise</p>
-            <p className="report_daily_data_real_text">3</p>
+            <p className="report_daily_data_real_text">{loading ? "Loading..." : reportData?.todaysData.workout.exercises.length || "0"}</p>
           </div>
         </div>
       </div>

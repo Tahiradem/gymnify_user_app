@@ -1,44 +1,45 @@
 const Gymers = require('../models/Gym');
 
+// workoutController.js
 exports.saveWorkoutTime = async (req, res) => {
   try {
     const { email, date, timeSpent } = req.body;
 
-    // 1. Update directly using the email as identifier
-    const result = await Gymers.updateOne(
-      { 'users.email': email },
-      { 
-        $set: { 
-          [`users.$[user].spentTimeOnGym.${date}`]: timeSpent 
-        } 
-      },
-      { 
-        arrayFilters: [{ 'user.email': email }]
-      }
-    );
-
-    // 2. If no document was matched, the user doesn't exist
-    if (result.matchedCount === 0) {
-      return res.status(404).json({ 
+    // Validate required fields
+    if (!email || !date || !timeSpent) {
+      return res.status(400).json({ 
         success: false, 
-        message: 'User not found' 
+        message: 'Missing required fields: email, date, or timeSpent' 
       });
     }
 
-    // 3. If no modification was made but user exists, the field might not exist
-    if (result.modifiedCount === 0) {
-      // Initialize the field first
-      await Gymers.updateOne(
-        { 'users.email': email },
-        { 
-          $set: { 
-            [`users.$[user].spentTimeOnGym`]: { [date]: timeSpent }
-          } 
-        },
-        { 
-          arrayFilters: [{ 'user.email': email }]
-        }
-      );
+    // Convert date to consistent format (e.g., "Monday/jun/30/2025")
+    const formattedDate = new Date(date).toLocaleDateString('en-US', {
+      weekday: 'long',
+      month: 'short',
+      day: '2-digit',
+      year: 'numeric'
+    }).replace(/,/g, '');
+
+    // Update the user's spent time
+    const result = await Gymers.findOneAndUpdate(
+      { 'users.email': email },
+      { 
+        $set: { 
+          [`users.$[user].spentTimeOnGym.${formattedDate}`]: timeSpent 
+        } 
+      },
+      { 
+        arrayFilters: [{ 'user.email': email }],
+        new: true
+      }
+    );
+
+    if (!result) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
     }
 
     res.status(200).json({

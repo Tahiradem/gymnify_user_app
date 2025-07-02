@@ -5,26 +5,75 @@ import Targeted_body_pic from "../assets/1000093564-removebg-preview.png";
 import ExerciseCompo from "../components/ExerciseCompo";
 import { getAuthData } from "../utils/authStorage";
 import StartExerciseButton from "../components/buttons/StartExercise";
-import {FaArrowLeft } from 'react-icons/fa';
-
+import { FaArrowLeft } from 'react-icons/fa';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const ExercisePage = () => {
-
-  const { userData , gymName} = getAuthData();
+  const { userData } = getAuthData();
+  const [workoutData, setWorkoutData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const today = new Date();
   const dayNumber = (today.getDay() + 6) % 7;
-  
+
+  useEffect(() => {
+    const fetchWorkoutData = async () => {
+      try {
+        // Make sure to use the correct API endpoint
+        const response = await axios.get(
+          `http://localhost:5000/api/workouts/${userData._id}/todays-data`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          }
+        );
+        
+        console.log("API Response Data:", response.data);
+        
+        if (response.data && response.data.success) {
+          setWorkoutData(response.data.data);
+        } else {
+          setError("No workout data available");
+        }
+      } catch (err) {
+        console.error("API Error:", err);
+        setError("Failed to fetch workout data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWorkoutData();
+  }, [userData._id]);
+
+  if (loading) {
+    return <div className="loading">Loading workout data...</div>;
+  }
+
+  if (error) {
+    return <div className="error">{error}</div>;
+  }
+
+  // Fallback to user's exercise schedule if no API data
+  const targetMuscle = workoutData?.workout?.targetMuscle || userData.exercises[dayNumber] || "full-body";
+  const calorieBurn = workoutData?.workout?.totalCalories || "100 cal";
+  const exerciseCount = workoutData?.workout?.exercises?.length || 1;
+  const exercises = workoutData?.workout?.exercises || [];
 
   return (
     <div className="exercise-page">
       <NavigationBar />
       <img src={imageTop} className="imageTop" alt="Exercise banner" />
-      <a className="back_into_navigator_page"><FaArrowLeft className="back_into_navigator_page" /></a>
+      <a className="back_into_navigator_page">
+        <FaArrowLeft className="back_into_navigator_page" />
+      </a>
       <div className="exercise_main_continer">
         <div className="Top_about_exercise">
           <span className="Day_and_text_exercise">
-            <h1>{userData.monthlyAttendance[0].daysAttended} Days</h1>
-            <h2>{userData.exercises[dayNumber]}</h2>
+            <h1>{userData.monthlyAttendance[0]?.daysAttended || 0} Days</h1>
+            <h2>{targetMuscle}</h2>
           </span>
           <img 
             src={Targeted_body_pic} 
@@ -34,19 +83,22 @@ const ExercisePage = () => {
         </div>
         <div className="Tagrgeted_things_container">
           <div className="targeted_weight">
-            <p>Targeted KG</p>
-            <p>50 KG</p>
+            <p>Difficulty</p>
+            <p>{workoutData?.workout?.exercises[0].Difficulty || "Mode"}</p>
           </div>
           <div className="targeted_calorie_burn">
             <p>Calorie will burn</p>
-            <p>100 cal</p>
+            <p>{calorieBurn}</p>
           </div>
         </div>
         <div className="middle_container_exercise">
-            <p className="how_much_exercise_txt">5 exercises</p>
-            <StartExerciseButton/>
+          <p className="how_much_exercise_txt">{exerciseCount} exercises</p>
+          <StartExerciseButton 
+            workoutStarted={workoutData?.workout?.started || false}
+            userId={userData._id}
+          />
         </div>
-        <ExerciseCompo />
+        <ExerciseCompo exercises={exercises} />
       </div>
     </div>
   );

@@ -147,11 +147,10 @@
   height: 230px;
   margin-top: 10px;
   border-radius: 10px;
-  box-shadow: 3px 3px 10px -5px #3333332c;
   display: flex;
   flex-direction: column;
-  background: #333;
-  color: #fff;
+  background: #fff;
+  color: #333;
 
 }
 .food_image_for_butration_page{

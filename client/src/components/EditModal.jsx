@@ -23,7 +23,7 @@ const EditModal = ({ field, currentValue, onSave, onClose }) => {
   };
 
   const getInputType = () => {
-    if (field === 'weight' || field === 'height' || field === 'age' || field === 'bodyFat') {
+    if (field === 'weight' || field === 'height' || field === 'age' || field === 'waistSize' || field === 'neckSize' || field === 'hipSize') {
       return 'number';
     }
     if (field === 'livesInHotClimate') {

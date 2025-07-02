@@ -2,18 +2,15 @@ import "./SettingPage.css";
 import NavigationBar from "../components/NavigationBar";
 import { fetchUserData } from "../utils/apiFetcher";
 import { useState, useEffect } from "react";
+import { getAuthData } from '../utils/authStorage';
+
 
 const SettingPage = () => {
-    const [dataBaseData, setDataBaseData] = useState(null);
+    const { userData } = getAuthData();
 
-    useEffect(() => {
-        const loadData = async () => {
-            const { user } = await fetchUserData();
-            setDataBaseData(user);
-        };
-        loadData();
-        }, []);
-        console.log(dataBaseData?.monthlyAttendance[0].dateOfAttended)
+const today = new Date();
+const dayNumber = today.getDay(); 
+        console.log(userData.exercises[dayNumber - 1])
     return (
         <div className="setting_page_main_conta">
             <NavigationBar/>

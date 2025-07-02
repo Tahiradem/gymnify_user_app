@@ -33,7 +33,44 @@ const userSchema = new mongoose.Schema({
   proteinAmountRequired: String,
   TodayNotification: String,
   activityLevel: String,
-  fitnessGoal: String
+  fitnessGoal: String,
+  bodyMeasurements: {
+    waistSize: Number,
+    neckSize: Number,
+    hipSize: Number // Only required for females
+  },
+  todaysData: {
+    date: { 
+      type: Date, 
+      default: Date.now 
+    },
+    profile: {
+      bodyFatPercentage: Number,
+      BMR: Number,
+      TDEE: Number,
+      targetCalories: Number,
+      activityLevel: String,
+      activeDays: Number,
+      primaryGoal: String
+    },
+    workout: {
+      targetMuscle: String,
+      exercises: [{
+        Exercise: String,
+        Intensity: String,
+        Calories: String,
+        Equipment: String,
+        Difficulty: String,
+        Video:String,
+        Alternatives: [{
+          name: String,
+          calories: String
+        }]
+      }],
+      totalCalories: String,
+      targetMet: Boolean
+    }
+  }
 });
 
 const weeklyDataSchema = new mongoose.Schema({
@@ -108,6 +145,37 @@ const membershipSchema = new mongoose.Schema({
     services: [String]
   }
 });
+const workoutSchema = new mongoose.Schema({
+  date: { 
+    type: Date, 
+    default: Date.now 
+  },
+  profile: {
+    bodyFatPercentage: Number,
+    BMR: Number,
+    TDEE: Number,
+    targetCalories: Number,
+    activityLevel: String,
+    activeDays: Number,
+    primaryGoal: String
+  },
+  workout: {
+    targetMuscle: String,
+    exercises: [{
+      Exercise: String,
+      Intensity: String,
+      Calories: String,
+      Equipment: String,
+      Difficulty: String,
+      Alternatives: [{
+        name: String,
+        calories: String
+      }]
+    }],
+    totalCalories: String,
+    targetMet: Boolean
+  }
+});
 
 const gymSchema = new mongoose.Schema({
   name: String,
@@ -128,13 +196,36 @@ const gymSchema = new mongoose.Schema({
   totalUsers: Number,
   currentUsers: Number,
   location: String,
-  adminNotifications: [String],
+  adminNotifications: {
+    type: [String],
+    default: [],
+    get: function(notifications) {
+      // Handle case where it's stored as a string
+      if (typeof notifications === 'string') {
+        try {
+          return JSON.parse(notifications.replace(/'/g, '"'));
+        } catch (e) {
+          return [];
+        }
+      }
+      return notifications;
+    },
+    set: function(notifications) {
+      // Ensure we always store as an array
+      return Array.isArray(notifications) ? notifications : [];
+    }
+  },
   pricePlan: Number,
   paymentsList: [String],
   accountNumbers: [String],
   payDone: Boolean,
   serviceTermination: Boolean,
-  memberShip: membershipSchema
+  memberShip: membershipSchema,
+  workoutStatistics: {
+    totalWorkoutsCompleted: Number,
+    averageCaloriesBurned: Number,
+    mostPopularExercises: [String]
+  }
 });
 
 module.exports = mongoose.model('Gymers', gymSchema);

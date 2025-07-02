@@ -1,7 +1,10 @@
 import "./NutrationPage.css";
 import NavigationBar from "../components/NavigationBar";
 import { FaBox, FaCartPlus, FaCheck, FaPhone, FaShoppingBasket } from "react-icons/fa";
-import foodImage1 from "../assets/1000093564-removebg-preview.png";
+import foodImage1 from "../assets/foodImg1.jpg";
+import foodImage2 from "../assets/foodImg2.jpg";
+import foodImage3 from "../assets/foodImg3.jpg";
+import foodImage4 from "../assets/foodImg4.jpg";
 import { useState } from "react";
 import { FaChartPie } from 'react-icons/fa';
 
@@ -31,13 +34,13 @@ const NutrationPage = () => {
           description: "Rice is a good source of energy and contains small amounts of protein, fiber, and various vitamins and minerals. Brown rice is more nutritious than white rice."
         },
         {
-          image: foodImage1,
+          image: foodImage2,
           name: "Boiled Eggs",
           amount: "2 pieces",
           description: "Eggs are packed with high-quality protein, vitamins, and minerals. They contain all nine essential amino acids and are particularly rich in vitamin B12 and choline."
         },
         {
-          image: foodImage1,
+          image: foodImage3,
           name: "Banana",
           amount: "1 medium",
           description: "Bananas are rich in potassium, fiber, and natural sugars. They provide quick energy and help maintain proper heart function and digestion."
@@ -48,7 +51,7 @@ const NutrationPage = () => {
       time: "Afternoon",
       items: [
         {
-          image: foodImage1,
+          image: foodImage4,
           name: "Grilled Chicken",
           amount: "150g",
           description: "Chicken is an excellent source of lean protein. It's rich in B vitamins, particularly niacin and B6, which are important for energy metabolism and brain health."
@@ -60,7 +63,7 @@ const NutrationPage = () => {
           description: "Steamed vegetables retain most of their nutrients. They're rich in vitamins, minerals, fiber, and antioxidants that support overall health and immune function."
         },
         {
-          image: foodImage1,
+          image: foodImage2,
           name: "Brown Rice",
           amount: "1/2 cup",
           description: "Brown rice is a whole grain that contains the bran and germ, providing more fiber, vitamins, and minerals than white rice. It's a good source of manganese and selenium."
