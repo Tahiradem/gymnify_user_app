@@ -31,23 +31,26 @@ const connectDB = async () => {
     process.exit(1);
   }
 };
-
 connectDB();
 
 // ------------------ ROUTES ------------------
-app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/workouts', require('./routes/workoutRoutes'));
-app.use('/api/exercise-suggestions', require('./routes/exerciseSuggestionRouter'));
-app.use('/api/reports', require('./routes/reportRoutes'));
-
-// ❌ FIXED: Removed duplicate and conflicting route
-// DO NOT mount two different routers on the same path (caused crash before)
+try {
+  app.use('/api/auth', require('./routes/authRoutes'));
+  app.use('/api/workouts', require('./routes/workoutRoutes'));
+  app.use('/api/exercise-suggestions', require('./routes/exerciseSuggestionRouter'));
+  app.use('/api/reports', require('./routes/reportRoutes'));
+  console.log('✅ API routes loaded');
+} catch (err) {
+  console.error('❌ Error loading routes:', err);
+}
 
 // ------------------ FRONTEND STATIC ------------------
-app.use(express.static(path.join(__dirname, '../client/dist'))); // Use 'build' if CRA
+// Serve React static files (Vite: dist, CRA: build)
+const clientPath = path.join(__dirname, '../client/dist'); // Change to 'build' for CRA
+app.use(express.static(clientPath));
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+  res.sendFile(path.join(clientPath, 'index.html'));
 });
 
 // ------------------ ERROR HANDLER ------------------
@@ -61,4 +64,3 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
-
