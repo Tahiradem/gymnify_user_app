@@ -1,19 +1,16 @@
 {
-  "name": "gymnify-users-site",
+  "name": "gymnify-fullstack-app",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "install-all": "npm install --prefix client && npm install --prefix server",
+    "build": "npm run build --prefix client",
+    "start": "npm start --prefix server"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.1",
-    "express": "^5.1.0",
-    "mongoose": "^8.16.4",
-    "react-icons": "^5.5.0"
-  }
+  "description": "Gymnify full-stack deployment",
+  "dependencies": {},
+  "devDependencies": {}
 }
