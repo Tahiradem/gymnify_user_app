@@ -11,6 +11,12 @@
   "author": "",
   "license": "ISC",
   "description": "Gymnify full-stack deployment",
-  "dependencies": {},
+"dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "mongoose": "^8.16.4",
+    "react-icons": "^5.5.0"
+  } , 
   "devDependencies": {}
 }
