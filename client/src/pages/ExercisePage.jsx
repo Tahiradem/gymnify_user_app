@@ -17,12 +17,14 @@ const ExercisePage = () => {
   const today = new Date();
   const dayNumber = (today.getDay() + 6) % 7;
 
+  const connection_server = `${import.meta.env.VITE_API_BASE_URL}`
+
   useEffect(() => {
     const fetchWorkoutData = async () => {
       try {
         // Make sure to use the correct API endpoint
         const response = await axios.get(
-          `http://localhost:5000/api/workouts/${userData._id}/todays-data`,
+          `${connection_server}/api/workouts/${userData._id}/todays-data`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -72,7 +74,7 @@ const ExercisePage = () => {
       <div className="exercise_main_continer">
         <div className="Top_about_exercise">
           <span className="Day_and_text_exercise">
-            <h1>{userData.monthlyAttendance[0]?.daysAttended || 0} Days</h1>
+            <h1>{userData.monthlyAttendance[1]?.daysAttended || 0} Days</h1>
             <h2>{targetMuscle}</h2>
           </span>
           <img 

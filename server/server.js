@@ -12,6 +12,7 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

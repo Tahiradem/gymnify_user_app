@@ -39,6 +39,15 @@ const userSchema = new mongoose.Schema({
     neckSize: Number,
     hipSize: Number // Only required for females
   },
+  weeklyCalorieBurn:{
+    Mon: Number,
+    Tue: Number,
+    Wed: Number,
+    Thu: Number,
+    Fri: Number,
+    Sat: Number,
+    Sun: Number,
+  },
   todaysData: {
     date: { 
       type: Date, 

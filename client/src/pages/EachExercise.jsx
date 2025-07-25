@@ -173,9 +173,10 @@ const handleFinishWorkout = async () => {
 
     const now = new Date();
     const timeSpentFormatted = formatTime(timeSpent);
+    const connection_server = `${import.meta.env.VITE_API_BASE_URL}`
     
     const response = await axios.post(
-      'http://localhost:5000/api/workouts/save-workout-time',
+      `${connection_server}/api/workouts/save-workout-time`,
       {
         email: userEmail,
         date: now.toISOString(), // Send ISO string and let backend format it

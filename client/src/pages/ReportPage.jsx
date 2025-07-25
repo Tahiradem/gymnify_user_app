@@ -86,10 +86,10 @@ const ReportPage = () => {
   }
 
   const formattedDate = getFormattedDate();
-  console.log(reportData?.todaysData.workout.totalCalories)
+  // console.log(reportData?.todaysData.workout.totalCalories)
   
   // Get attendance data from database or use sample data
-  const attendanceData = dataBaseData?.monthlyAttendance[0].dateOfAttended|| [
+  const attendanceData = dataBaseData?.monthlyAttendance[1].dateOfAttended|| [
     '2025-06-01',
     '2025-06-02',
     '2025-06-05',
